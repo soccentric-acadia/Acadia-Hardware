@@ -38,7 +38,46 @@ What does **not** live here:
 
 ## Setup
 
-Add setup instructions here.
+This repository is the design source of truth. "Setup" here means
+opening and validating the EDA project, not building or running
+code.
+
+### Current state
+
+The EDA project has not been committed yet (tracked by #4). Until
+the hardware engineer lands the design:
+
+1. Clone the repo.
+2. Read this `README.md` and [`CLAUDE.md`](./CLAUDE.md).
+3. Read the [open issues](https://github.com/SiliconCentric/Acadia-Hardware/issues)
+   to see the gaps.
+
+### Once the EDA project is committed
+
+The expected workflow (to be added to [`CLAUDE.md`](./CLAUDE.md)
+**Do** as the engineer confirms each step):
+
+1. **Open the project** with the EDA tool pinned in
+   `tools/<eda>.version` (or equivalent — tracked by #8). Common
+   choice: **KiCad 8.x**.
+2. **Locate the source files** under `hardware/`:
+   - `hardware/Acadia.<ext>` — the project file (e.g. `Acadia.kicad_pro`).
+   - `hardware/schematics/` — schematic sheets.
+   - `hardware/pcb/` — PCB layout.
+   - `hardware/libraries/` — project-local symbols, footprints, 3D
+     models.
+3. **Build the BOM** — `make run` (or the equivalent) should export
+   a CSV to `hardware/manufacturing/<rev>/BOM.csv`.
+4. **Run DRC / ERC** — `make build` runs design-rule and
+   electrical-rule checks. The CI / pre-push step (`make build &&
+   make test && make lint`, per global §9 step 6) must pass.
+5. **Produce gerbers / drill / POS** — `make run` writes outputs to
+   `hardware/manufacturing/<rev>/` for the contract manufacturer.
+
+For the moment, the only setup is to clone the repo and read this
+README. Manufacturing partners should request the gerber / BOM
+bundle from the hardware engineer — there is no automated export
+target yet.
 
 ## Usage
 
