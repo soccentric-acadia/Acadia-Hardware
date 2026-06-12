@@ -109,33 +109,79 @@ against whatever the human hardware engineer lands first.
 
 ## Do
 
-_(Empty — populate as commands succeed. Per global §11, every
-working command goes here. Examples of what will eventually land: "Run
-DRC: `make build` (wraps `kicad-cli pcb drc ...`)", "Generate
-gerbers: `make run` (wraps `kicad-cli pcb export gerbers ...`)",
-"Validate: `make build && make test && make lint`".)_
+- **Pop the `CLAUDE.md` stash before working on it.** If the
+  `CLAUDE.md` from `/init` is stashed (it is, at session start, if
+  the previous session left it that way), run `git stash pop` to
+  restore it before editing. Verify with `git status` — an
+  untracked `CLAUDE.md` is the normal post-`/init` state.
+- **Sync to `develop` first.** `git checkout develop && git fetch
+  origin && git rebase origin/develop` before opening any issue
+  for fix. The §9 loop is off `develop`, not `release` or `main`.
+- **One branch per `requirements` issue, even when they touch the
+  same file.** For the README stub the three issues (#1, #2, #3)
+  were on the same file but on different hunks; splitting into
+  three branches + three PRs kept the history reviewable. Do
+  *not* batch README placeholder fixes into one PR.
+- **Skip the `in-progress` label if it doesn't exist on the
+  repo.** This repo's default labels don't include `in-progress`;
+  the label-add step in §9 is a no-op. The `gh issue comment` step
+  is the durable "started" signal.
+- **Pass PR body via `--body-file` (never inline).** Inline
+  `--body "..."` silently mangles backticks. Always write the
+  body to a file and pass `--body-file`.
+- **Close `Fixes #N` issues manually if `gh pr merge` does not
+  auto-close them.** In this repo, `Fixes #N` in the PR body did
+  not auto-close on merge for any of #1, #2, #3, or #9. After
+  every `gh pr merge`, check `gh issue view <N> --json state` and
+  run `gh issue close <N>` with a brief comment explaining.
+- **Prune the remote ref after each merge.** `gh pr merge
+  --delete-branch` deletes the local branch but leaves the
+  remote ref. Run `git remote prune origin` after each merge to
+  keep `git branch -a` honest.
+- **Record Do/Don't lessons in this file as the *last* step of
+  the loop, on a small `chore:` commit on `develop`.** Do not
+  bundle CLAUDE.md updates into an issue-fix PR — the §9 branch
+  naming and PR body are issue-specific, and a CLAUDE.md update
+  doesn't belong on `fix/1-readme-description`.
 
 ## Don't
 
-- Don't add code, schematics, PCB layouts, or symbol/footprint
-  libraries to this repo. The `*-Hardware` repo is read-only design
-  context (global §4). A human hardware engineer owns the design;
-  Claude files review findings, never implements them.
-- Don't create an EDA project, BOM, or gerber outputs. Even if a
-  user asks, surface the global §4 rule and route the request to the
-  hardware engineer.
-- Don't write the README "Description" / "Setup" / "Usage" sections
-  from imagination. Those sections must describe the *real* design;
-  prose written before the design lands will be wrong or aspirational
-  and will be rejected by §9 step 6 validation.
-- Don't add tags or bump versions in this repo. The root
+- **Don't add code, schematics, PCB layouts, or symbol/footprint
+  libraries to this repo.** The `*-Hardware` repo is read-only
+  design context (global §4). A human hardware engineer owns the
+  design; Claude files review findings, never implements them.
+- **Don't create an EDA project, BOM, or gerber outputs.** Even
+  if a user asks, surface the global §4 rule and route the
+  request to the hardware engineer.
+- **Don't write the README "Description" / "Setup" / "Usage"
+  sections from imagination.** Populate them with content
+  *derivable* from the global CLAUDE.md (project name, target
+  SoC, RT element, consumer list) and cross-link to tracking
+  issues for anything that depends on design content not yet
+  present. Never invent aspirational prose.
+- **Don't write `CLAUDE.md` "Current state" sections without a
+  date stamp.** A snapshot paragraph goes stale the moment the
+  next commit lands. Add `(as of YYYY-MM-DD)` to the section
+  heading and reference exact branch SHAs / issue numbers.
+- **Don't proceed past §9 step 4 (baseline build) without an
+  explicit user override.** A baseline `make` failure is the
+  canonical stop condition. The fix loop in this session
+  continued past the stop only because the user chose
+  "Claude fixes docs" — that override is the *only* reason the
+  docs issues were fixable in this repo, and only because the
+  docs subset has no §4 conflict.
+- **Don't try to implement issues that violate global §4 just
+  because they are open and labelled `requirements`.** Issues
+  #4–#8 in this repo are all hardware-only and must be closed
+  with a §4 citation, not implemented.
+- **Don't add tags or bump versions in this repo.** The root
   `project-managers` Makefile is the only release path; it reads
   `.version` and tags every leaf.
-- Don't commit secrets. The global `GH_TOKEN` env var is the only
-  auth; never embed it.
-- Don't add `.gitmodules` or use `git submodule` (global §⛔).
-- Don't file *code* issues (memory-safety, concurrency, etc.) here —
-  there is no code in this repo. The `requirements` label is the
-  right label for design-vs-requirements findings; `bug`/`security`/
-  etc. belong in the consuming component (`Acadia-HAL`,
-  `Acadia-OS`, …).
+- **Don't commit secrets.** The global `GH_TOKEN` env var is the
+  only auth; never embed it.
+- **Don't add `.gitmodules` or use `git submodule`** (global §⛔).
+- **Don't file *code* issues (memory-safety, concurrency, etc.)
+  here** — there is no code in this repo. The `requirements`
+  label is the right label for design-vs-requirements findings;
+  `bug`/`security`/etc. belong in the consuming component
+  (`Acadia-HAL`, `Acadia-OS`, …).
