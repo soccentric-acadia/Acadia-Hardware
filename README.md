@@ -81,4 +81,41 @@ target yet.
 
 ## Usage
 
-Add usage instructions here.
+This repository is the **design source of truth** for the Acadia
+board. "Usage" here is the workflow downstream components and
+manufacturing partners follow when consuming the design.
+
+### Who consumes this design
+
+| Consumer | What they take from here | Tracking issue (open) |
+|---|---|---|
+| `Acadia-HAL` | Exported netlist, pin map, and any HAL-relevant board notes | #4 (export tooling) |
+| `Acadia-OS` | Pin map → device tree, board revision for the BSP | #4 (export tooling) |
+| `Acadia-Client`, `Acadia-Server`, `Acadia-Dashboard`, `Acadia-PySDK` | Validate their logic against the manufactured board (post-prototype) | n/a |
+| Contract manufacturer (CM) | Gerbers, drill, BOM, pick-and-place files | #4 (artefacts not yet generated) |
+
+### Revision history
+
+A revision-history table is added to `docs/REVISIONS.md` once the
+first board revision is committed. Format:
+
+| Rev | Date | Changes | Known errata |
+|---|---|---|---|
+| _none yet_ | — | — | — |
+
+### Contracts surfaced by this design
+
+This repo is the source of truth for **electrical** behaviour; it
+is **not** the source of truth for any interface contract. The
+following contracts are owned by their respective component repos
+and must not be changed from here:
+
+- **HAL API** — `Acadia-HAL/include/`
+- **gRPC `.proto` + FlatBuffers `.fbs`** — `Acadia-Client/proto/`
+- **GraphQL schema** — `Acadia-Server/graphql/`
+- **PySDK public API** — `Acadia-PySDK/`
+
+If a board revision forces a contract change, the change originates
+in the consumer component and is approved per global §5. This repo
+simply records the design; it does not unilaterally change
+contracts.
