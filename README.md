@@ -14,7 +14,7 @@ against. Per global §4, this repo is **read-only design context** —
 design changes are committed by a human hardware engineer.
 
 **Design status:** in design (no committed EDA project yet). See the
-[open issues](https://github.com/SiliconCentric/Acadia-Hardware/issues)
+[open issues](https://github.com/soccentric-acadia/Acadia-Hardware/issues)
 for the gaps; the planned layout is under `hardware/Acadia.<ext>`.
 
 ## Description
@@ -49,7 +49,7 @@ the hardware engineer lands the design:
 
 1. Clone the repo.
 2. Read this `README.md` and [`CLAUDE.md`](./CLAUDE.md).
-3. Read the [open issues](https://github.com/SiliconCentric/Acadia-Hardware/issues)
+3. Read the [open issues](https://github.com/soccentric-acadia/Acadia-Hardware/issues)
    to see the gaps.
 
 ### Once the EDA project is committed
