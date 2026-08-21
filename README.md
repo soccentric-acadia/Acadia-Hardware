@@ -1,5 +1,28 @@
 # Acadia-Hardware
 
+## Project Description
+
+Acadia-Hardware is intended to be the electrical design source of truth for the Acadia platform: schematics, PCB layout, component libraries, bill of materials, manufacturing exports, pin mapping, revision history, and errata. The design context names a Raspberry Pi CM4/CM5 application processor paired with a Pico W/RP2040 real-time co-processor. Downstream software repositories consume its board facts when implementing HAL, OS, Client, Server, Dashboard, and PySDK behavior; interface contracts remain owned by those software repositories.
+
+The repository is currently not an implemented EDA project. Existing documentation explicitly says that no committed EDA project, schematic, PCB, library, manufacturing bundle, or automated export target is present. This README therefore records planned deliverables and repository relationships rather than pretending a board revision exists. There is no executable source, hardware test suite, or software build to run. The expected future workflow is to open the EDA project under `hardware/`, run electrical/design-rule checks, export a revisioned BOM and manufacturing files, and publish a pin map and revision history.
+
+The useful current actions are documentation and issue review: read `CLAUDE.md`, inspect the design gaps, and coordinate changes with the human hardware engineer. Downstream teams should treat electrical assumptions as provisional until the first design revision is committed and reviewed. Manufacturing partners should not infer that Gerbers, drill files, pick-and-place data, or a BOM are available from this checkout.
+
+## Feature Matrix
+
+| # | Name / Description | Implemented? | Test Coverage? | Manual Test |
+|---:|---|---|---|---|
+| 1 | Design repository and ownership documentation | Implemented | Documentation only | [ ] Manual verification required |
+| 2 | Raspberry Pi CM4/CM5 plus Pico W/RP2040 definition | Planned | None | [ ] Manual verification required |
+| 3 | Schematic project | Planned: no committed EDA project | None | [ ] Manual verification required |
+| 4 | PCB layout | Planned: no committed EDA project | None | [ ] Manual verification required |
+| 5 | Symbols, footprints, and 3D models | Planned | None | [ ] Manual verification required |
+| 6 | Pin map and revision history | Planned | None | [ ] Manual verification required |
+| 7 | BOM, Gerbers, drill, and pick-and-place exports | Planned | None | [ ] Manual verification required |
+| 8 | ERC/DRC and manufacturing automation | Planned | None | [ ] Manual verification required |
+| 9 | Downstream electrical-consumer contract | Partial: relationship documented; data absent | None | [ ] Manual verification required |
+| 10 | Hardware errata and revision records | Planned | None | [ ] Manual verification required |
+
 Design source of truth for the **Acadia** platform. Acadia is one of
 the 9 SoCcentric projects and targets the **Raspberry Pi CM4/CM5** as
 the application processor with a **Pico W (RP2040)** as the real-time
