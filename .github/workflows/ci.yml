@@ -1,0 +1,49 @@
+name: CI
+
+# Acadia-Hardware is a design-source-of-truth repository (schematics, PCB, BOM)
+# with no executable software to build. CI validates the artifacts that DO
+# exist so design documents and contracts stay internally consistent and no
+# placeholder/insecure content is accidentally merged.
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  doc-integrity:
+    name: Documentation & artifact integrity
+    runs-on: ubuntu-24.04
+    container:
+      image: python:3.12-slim
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tooling
+        run: |
+          apt-get update && apt-get install -y --no-install-recommends yamllint
+          pip install --quiet --no-cache-dir json5
+      - name: Validate YAML/JSON files
+        run: |
+          # Validate all committed YAML/JSON for syntax.
+          for f in $(find . -type f \( -name '*.yml' -o -name '*.yaml' \) -not -path './.git/*'); do
+            yamllint -d relaxed "$f" || exit 1
+          done
+          for f in $(find . -type f -name '*.json' -not -path './.git/*'); do
+            python3 -m json.tool "$f" >/dev/null || exit 1
+          done
+      - name: Require core docs
+        run: |
+          for f in README.md CLAUDE.md .gitignore; do
+            test -f "$f" || { echo "missing required file: $f"; exit 1; }
+          done
+      - name: Fail on placeholder/unimplemented markers
+        run: |
+          grep -rniE "TODO|PLACEHOLDER|TBD|not implemented" --include="*.md" . && { echo "placeholder markers present"; exit 1; } || exit 0
+      - name: Ban credentials in tracked files
+        run: |
+          if grep -rniE "(pass(word)?|secret)[[:space:]]*[:=]" --include="*.md" --include="*.yml" --include="*.yaml" --include="*.json" --include="*.txt" .; then
+            echo "possible hardcoded credential in tracked files"; exit 1;
+          else
+            echo "no hardcoded credentials found";
+          fi
