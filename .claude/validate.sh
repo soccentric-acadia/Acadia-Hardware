@@ -21,13 +21,24 @@ TIER="$(tier_or_die "${1:-quick}")"
 assert "README present (human-owned reference)" 'test -f README.md'
 assert "CLAUDE.md present (owner contract)" 'test -f CLAUDE.md'
 
-# The pin-map / electrical-limits contract (task 19) is not yet committed. It is
-# tracked and owned, so record it as a NOTE rather than failing the gate.
-if find . -iname "*pin*map*" -o -iname "*contract*" 2>/dev/null | grep -q .; then
-  note "pin-map / hardware contract present" "task 19 artifact committed"
-else
-  note "pin-map / hardware contract absent" "tracked by task 19; not part of this gate's pass/fail"
-fi
+# The pin-map / electrical-limits contract (task 19) is the executable artifact
+# OS/HAL consume. Its presence is a hard requirement of this gate.
+check "pin-map JSON is valid + versioned" "python3" \
+  'python3 - <<PY
+import json, glob, sys
+files = glob.glob("pin-map/*.json")
+if not files:
+    print("no pin-map/*.json contract present"); sys.exit(1)
+for f in files:
+    d = json.load(open(f))
+    for k in ("board_revision", "gpio", "electrical_limits"):
+        if k not in d:
+            print(f"{f} missing required key {k}"); sys.exit(1)
+    if not isinstance(d["gpio"], list):
+        print(f"{f} gpio must be a list"); sys.exit(1)
+    rev = d["board_revision"]
+    print(f"OK: {len(files)} pin-map file(s), board_revision={rev}")
+PY'
 
 # This repo is never in a fleet build; its gate must not pretend otherwise.
 assert "not consumed as a build dependency" \

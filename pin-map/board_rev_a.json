@@ -1,0 +1,41 @@
+{
+  "contract_version": "1.0",
+  "board_revision": "rpi5-cm5-bom-rev-a",
+  "updated": "2026-08-24",
+  "note": "Executable hardware-software pin-map contract consumed by Acadia-OS device trees and Acadia-HAL platform tables. Changes are cross-repo breaking events; bump board_revision on any edit.",
+  "platform": {
+    "soc": "BCM2712 + RP1",
+    "app_processor": "Raspberry Pi 5 / CM5",
+    "realtime_co_processor": "Raspberry Pi Pico W (RP2040)"
+  },
+  "pico_uart": {
+    "signal": "PicoW_UART0",
+    "pico_gpio": [0, 1],
+    "rpi_gpio": [14, 15],
+    "baud": 115200,
+    "polarity": "active_high",
+    "flow_control": "none"
+  },
+  "gpio": [
+    { "signal": "PWR_EN", "rpi_gpio": 17, "dir": "output", "default": "low", "polarity": "active_high" },
+    { "signal": "PICO_RESET", "rpi_gpio": 22, "dir": "output", "default": "high", "polarity": "active_low" },
+    { "signal": "CAN_STANDBY", "rpi_gpio": 27, "dir": "output", "default": "low", "polarity": "active_high" },
+    { "signal": "LED_STATUS", "rpi_gpio": 5, "dir": "output", "default": "low", "polarity": "active_high" }
+  ],
+  "i2c": [
+    { "bus": "i2c1", "sda": 2, "scl": 3, "clock_khz": 400, "devices": ["rtc", "eeprom"], "pulls": "external_1k8" }
+  ],
+  "spi": [
+    { "bus": "spi0", "miso": 9, "mosi": 10, "sclk": 11, "cs": 8, "mode": "mode0", "speed_hz": 1000000, "pulls": "none" }
+  ],
+  "uart": [
+    { "bus": "uart0", "tx": 14, "rx": 15, "baud": 115200, "flow": "none" }
+  ],
+  "electrical_limits": {
+    "io_voltage_v": 3.3,
+    "max_pin_current_ma": 16,
+    "pull_up_kohm": 1.8,
+    "pull_down_kohm": 10,
+    "note": "All GPIO are 3.3V logic; do not expose to >3.3V without level shifting."
+  }
+}
