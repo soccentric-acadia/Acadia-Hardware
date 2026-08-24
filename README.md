@@ -29,6 +29,11 @@ data, or a BOM are available from this checkout.
 |---:|---|---|---|---|
 | 1 | Design repository and ownership documentation | Implemented | Documentation only | [ ] Manual verification required |
 | 2 | Raspberry Pi CM4/CM5 plus Pico W/RP2040 definition | Planned | None | [ ] Manual verification required |
+
+Pico firmware source ownership is documented in `doc/pico-firmware-ownership.md`
+(task 17): owner, artifacts, versioning, build, signing, and update ownership.
+There is no committed firmware tree yet; downstream gates (`flash.sh --method uvs`,
+MCU update) require a real `.uf2` and never fabricate one.
 | 3 | Schematic project | Planned: no committed EDA project | None | [ ] Manual verification required |
 | 4 | PCB layout | Planned: no committed EDA project | None | [ ] Manual verification required |
 | 5 | Symbols, footprints, and 3D models | Planned | None | [ ] Manual verification required |
