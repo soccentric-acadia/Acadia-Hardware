@@ -26,3 +26,7 @@ Thumbs.db
 # .claude validation lib must stay tracked despite the generic lib/ rule
 !.claude/lib/
 !.claude/lib/*
+
+# Per-task working artifacts.
+Plan.md
+Task.md
