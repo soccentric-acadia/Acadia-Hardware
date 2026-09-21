@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-09-21 — Version support (task 001)
+
+### Added
+
+- Added `VERSION` file (1.0.0) and a minimal top-level `Makefile` with the
+  self-documenting `help` pattern and the fleet-standard `version` target
+  (CONV-004), so the parent `make versions` table covers this repository.
+
+Task records: `tasks/001-add-version-support-all-repos/`.
+
 ## 2026-09-18 — Agent documentation and task workflow standardization
 
 ### Added
