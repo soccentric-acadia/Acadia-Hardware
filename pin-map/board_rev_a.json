@@ -2,7 +2,7 @@
   "contract_version": "1.0",
   "board_revision": "rpi5-cm5-bom-rev-b",
   "updated": "2026-09-22",
-  "note": "Executable hardware-software pin-map contract consumed by Acadia-OS device trees and Acadia-HAL platform tables. Changes are cross-repo breaking events; bump board_revision on any edit.",
+  "note": "Executable hardware-software pin-map contract consumed by Acadia-OS device trees and Acadia-HAL platform tables. Changes are cross-repo breaking events; bump board_revision on any edit. UART allocation authority: parent doc/uart-allocation.md.",
   "platform": {
     "soc": "BCM2712 + RP1",
     "app_processor": "Raspberry Pi 5 / CM5",
@@ -10,28 +10,85 @@
   },
   "pico_uart": {
     "signal": "PicoW_UART2",
-    "pico_gpio": [0, 1],
-    "rpi_gpio": [0, 1],
+    "pico_gpio": [
+      0,
+      1
+    ],
+    "rpi_gpio": [
+      0,
+      1
+    ],
     "linux_device": "/dev/ttyAMA10",
     "baud": 115200,
     "polarity": "active_high",
     "flow_control": "none",
-    "note": "HW-004: moved off GPIO14/15 (UART0) — that UART is the OS debug console and HAL's RS-485 port (Acadia-HAL platform_rpi5.h). The Pico W link now uses RP1 UART2 on GPIO0/1, which were previously unallocated. Consuming code resolves the device node through Acadia-HAL's acadia_rs485_uart()/RPI5_UART1 table, not a hard-coded /dev path."
+    "note": "HW-004: moved off GPIO14/15 (UART0) \u2014 that UART is the OS debug console and HAL's RS-485 port (Acadia-HAL platform_rpi5.h). The Pico W link now uses RP1 UART2 on GPIO0/1, which were previously unallocated. Consuming code resolves the device node through Acadia-HAL's acadia_rs485_uart()/RPI5_UART1 table, not a hard-coded /dev path."
   },
   "gpio": [
-    { "signal": "PWR_EN", "rpi_gpio": 17, "dir": "output", "default": "low", "polarity": "active_high" },
-    { "signal": "PICO_RESET", "rpi_gpio": 22, "dir": "output", "default": "high", "polarity": "active_low" },
-    { "signal": "CAN_STANDBY", "rpi_gpio": 27, "dir": "output", "default": "low", "polarity": "active_high" },
-    { "signal": "LED_STATUS", "rpi_gpio": 5, "dir": "output", "default": "low", "polarity": "active_high" }
+    {
+      "signal": "PWR_EN",
+      "rpi_gpio": 17,
+      "dir": "output",
+      "default": "low",
+      "polarity": "active_high"
+    },
+    {
+      "signal": "PICO_RESET",
+      "rpi_gpio": 22,
+      "dir": "output",
+      "default": "high",
+      "polarity": "active_low"
+    },
+    {
+      "signal": "CAN_STANDBY",
+      "rpi_gpio": 27,
+      "dir": "output",
+      "default": "low",
+      "polarity": "active_high"
+    },
+    {
+      "signal": "LED_STATUS",
+      "rpi_gpio": 5,
+      "dir": "output",
+      "default": "low",
+      "polarity": "active_high"
+    }
   ],
   "i2c": [
-    { "bus": "i2c1", "sda": 2, "scl": 3, "clock_khz": 400, "devices": ["rtc", "eeprom"], "pulls": "external_1k8" }
+    {
+      "bus": "i2c1",
+      "sda": 2,
+      "scl": 3,
+      "clock_khz": 400,
+      "devices": [
+        "rtc",
+        "eeprom"
+      ],
+      "pulls": "external_1k8"
+    }
   ],
   "spi": [
-    { "bus": "spi0", "miso": 9, "mosi": 10, "sclk": 11, "cs": 8, "mode": "mode0", "speed_hz": 1000000, "pulls": "none" }
+    {
+      "bus": "spi0",
+      "miso": 9,
+      "mosi": 10,
+      "sclk": 11,
+      "cs": 8,
+      "mode": "mode0",
+      "speed_hz": 1000000,
+      "pulls": "none"
+    }
   ],
   "uart": [
-    { "bus": "uart2", "tx": 0, "rx": 1, "baud": 115200, "flow": "none", "linux_device": "/dev/ttyAMA10", "note": "Pico W co-processor link (HW-004); UART0 on GPIO14/15 remains the OS debug console and is NOT exposed to modules." }
+    {
+      "bus": "uart2",
+      "tx": 0,
+      "rx": 1,
+      "baud": 115200,
+      "flow": "none",
+      "linux_device": "/dev/ttyAMA10",
+      "note": "Pico W co-processor link (HW-004); UART0 on GPIO14/15 remains the OS debug console and is NOT exposed to modules."
+    }
   ],
   "electrical_limits": {
     "io_voltage_v": 3.3,
