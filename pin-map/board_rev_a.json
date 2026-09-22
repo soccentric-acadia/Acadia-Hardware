@@ -10,19 +10,13 @@
   },
   "pico_uart": {
     "signal": "PicoW_UART2",
-    "pico_gpio": [
-      0,
-      1
-    ],
-    "rpi_gpio": [
-      0,
-      1
-    ],
+    "pico_gpio": [0, 1],
+    "rpi_gpio": [0, 1],
     "linux_device": "/dev/ttyAMA10",
     "baud": 115200,
     "polarity": "active_high",
     "flow_control": "none",
-    "note": "HW-004: moved off GPIO14/15 (UART0) \u2014 that UART is the OS debug console and HAL's RS-485 port (Acadia-HAL platform_rpi5.h). The Pico W link now uses RP1 UART2 on GPIO0/1, which were previously unallocated. Consuming code resolves the device node through Acadia-HAL's acadia_rs485_uart()/RPI5_UART1 table, not a hard-coded /dev path."
+    "note": "HW-004: moved off GPIO14/15 (UART0) — that UART is the OS debug console and HAL's RS-485 port (Acadia-HAL platform_rpi5.h). The Pico W link now uses RP1 UART2 on GPIO0/1, which were previously unallocated. Consuming code resolves the device node through Acadia-HAL's acadia_rs485_uart()/RPI5_UART1 table, not a hard-coded /dev path."
   },
   "gpio": [
     {
