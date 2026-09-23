@@ -1,8 +1,8 @@
 {
   "contract_version": "1.0",
-  "board_revision": "rpi5-cm5-bom-rev-b",
-  "updated": "2026-09-22",
-  "note": "Executable hardware-software pin-map contract consumed by Acadia-OS device trees and Acadia-HAL platform tables. Changes are cross-repo breaking events; bump board_revision on any edit. UART allocation authority: parent doc/uart-allocation.md.",
+  "board_revision": "rpi5-cm5-bom-rev-c",
+  "updated": "2026-09-23",
+  "note": "Executable hardware-software pin-map contract consumed by Acadia-OS device trees and Acadia-HAL platform tables. Changes are cross-repo breaking events; bump board_revision on any edit. UART allocation authority: doc/uart-allocation.md (T-P15 \u2014 this map is the machine-readable projection).",
   "platform": {
     "soc": "BCM2712 + RP1",
     "app_processor": "Raspberry Pi 5 / CM5",
@@ -10,13 +10,20 @@
   },
   "pico_uart": {
     "signal": "PicoW_UART2",
-    "pico_gpio": [0, 1],
-    "rpi_gpio": [0, 1],
-    "linux_device": "/dev/ttyAMA10",
+    "pico_gpio": [
+      0,
+      1
+    ],
+    "rpi_gpio": [
+      0,
+      1
+    ],
+    "linux_device": "/dev/ttyAMA2",
     "baud": 115200,
     "polarity": "active_high",
     "flow_control": "none",
-    "note": "HW-004: moved off GPIO14/15 (UART0) — that UART is the OS debug console and HAL's RS-485 port (Acadia-HAL platform_rpi5.h). The Pico W link now uses RP1 UART2 on GPIO0/1, which were previously unallocated. Consuming code resolves the device node through Acadia-HAL's acadia_rs485_uart()/RPI5_UART1 table, not a hard-coded /dev path."
+    "hil_verify": "device node name for the uart2 overlay (expected /dev/ttyAMA2)",
+    "note": "T-P15: GPIO0/1 carry RP1 UART2 via the upstream uart2 overlay (HAT ID-EEPROM function of GPIO0/1 is unused on this board \u2014 the module EEPROM is on I2C1). The Pi 5 console lives on the dedicated debug-header UART /dev/ttyAMA10 (meta-raspberrypi SERIAL_CONSOLES), which is RESERVED; /dev/ttyAMA0 (GPIO14/15) is HAL's RS-485 port. Consumers resolve nodes through HAL accessors, never hard-coded paths."
   },
   "gpio": [
     {
@@ -80,8 +87,29 @@
       "rx": 1,
       "baud": 115200,
       "flow": "none",
+      "linux_device": "/dev/ttyAMA2",
+      "owner": "pico_link",
+      "hil_verify": "device node name for the uart2 overlay",
+      "note": "Pico W co-processor link (T-P15); enable via dtoverlay=uart2."
+    },
+    {
+      "bus": "uart0",
+      "tx": 14,
+      "rx": 15,
+      "baud": 115200,
+      "flow": "none",
+      "linux_device": "/dev/ttyAMA0",
+      "owner": "hal_rs485",
+      "note": "HAL RS-485 port (HAL-501: never the debug console \u2014 the console is the dedicated debug-header UART /dev/ttyAMA10)."
+    },
+    {
+      "bus": "uart10-debug",
+      "tx": null,
+      "rx": null,
       "linux_device": "/dev/ttyAMA10",
-      "note": "Pico W co-processor link (HW-004); UART0 on GPIO14/15 remains the OS debug console and is NOT exposed to modules."
+      "owner": "os_debug_console",
+      "reserved": true,
+      "note": "Pi 5 dedicated debug-header UART \u2014 OS console (SERIAL_CONSOLES), never a module port."
     }
   ],
   "electrical_limits": {
@@ -90,5 +118,34 @@
     "pull_up_kohm": 1.8,
     "pull_down_kohm": 10,
     "note": "All GPIO are 3.3V logic; do not expose to >3.3V without level shifting."
+  },
+  "do_not_touch": {
+    "note": "Header pins NOT in gpio[] are reserved; module code must never drive them.",
+    "pins": [
+      {
+        "rpi_gpio": 6,
+        "reason": "RTC/EEPROM write-protect strap (reserved)"
+      },
+      {
+        "rpi_gpio": 12,
+        "reason": "PWM fan header (kernel cooling maps, T-P30)"
+      },
+      {
+        "rpi_gpio": 13,
+        "reason": "PWM fan header (T-P30)"
+      },
+      {
+        "rpi_gpio": 7,
+        "reason": "SPI CE1 (spare chip select, reserved)"
+      },
+      {
+        "rpi_gpio": 0,
+        "reason": "Pico link TX (owned by pico_uart)"
+      },
+      {
+        "rpi_gpio": 1,
+        "reason": "Pico link RX (owned by pico_uart)"
+      }
+    ]
   }
 }
